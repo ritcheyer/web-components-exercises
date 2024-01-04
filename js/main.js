@@ -8,6 +8,12 @@ class GreetingMessage extends HTMLElement {
     super();
 
     console.log('Constructed', this);
+
+    this.innerHTML =
+      `<p>
+        <button>Hi there!</button>
+      </p>
+      <div class="message" aria-live="polite"></div>`;
   }
 
   /**
@@ -25,5 +31,13 @@ class GreetingMessage extends HTMLElement {
   }
 }
 if('customElements' in window) {
-customElements.define('greeting-message', GreetingMessage)
+  customElements.define('greeting-message', GreetingMessage)
 }
+
+let greeting = document.querySelector('greeting-message');
+
+// fires 'Constructed => Connected => Disconnected => Connected'
+document.body.append(greeting); 
+
+// fires 'Constructed => Connected => Disconnected'
+greeting.remove();
