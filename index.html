@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Unity Design System Web Components</title>
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body>
+    <h1>Registering a component</h1>
+    <greeting-message></greeting-message>
+    <script>
+      // Extend the HTMLElement class to create the web component
+      class GreetingMessage extends HTMLElement {
+        /**
+         *
+         */
+      }
+      if('customElements' in window) {
+        customElements.define('greeting-message', GreetingMessage)
+      }
+    </script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
