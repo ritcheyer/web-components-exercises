@@ -7,12 +7,15 @@ class GreetingMessage extends HTMLElement {
     // Always call super first in constructor
     super();
 
+    // Create the shadow root
+    this.root = this.attachShadow({mode: 'closed'});
+
     console.log('Constructed', this);
 
     //Render HTML
     let btnText = this.innerHTML.trim();
 
-    this.innerHTML =
+    this.root.innerHTML =
       `<p>
         <button>
           ${this.hasAttribute('wave') ? 'wave' : ''}
@@ -28,10 +31,10 @@ class GreetingMessage extends HTMLElement {
    */
   clickHandler(event) {
     // Get the host component
-    let host = event.target.closest('greeting-message');
+    let host = event.target.getRootNode().host;
 
     // Get the message element
-    let target = host.querySelector('.message');
+    let target = host.root.querySelector('.message');
     if (!target) return;
 
     let name = host.getAttribute('name');
@@ -51,7 +54,7 @@ class GreetingMessage extends HTMLElement {
     console.log('Connected!', this);
 
     // Attach a click event handler to the button
-    let btn = this.querySelector('button');
+    let btn = this.root.querySelector('button');
     if (!btn) return;
     btn.addEventListener('click', this.clickHandler);
   }
@@ -63,7 +66,7 @@ class GreetingMessage extends HTMLElement {
     console.log('Disconnected', this);
 
     // Remove the click event listener from the button
-    let btn = this.querySelector('button');
+    let btn = this.root.querySelector('button');
     if (!btn) return;
     btn.removeEventListener('click', this.clickHandler);
   }
@@ -91,14 +94,14 @@ class GreetingMessage extends HTMLElement {
     }
 
     // Remove the button
-    let btn = this.querySelector('button');
+    let btn = this.root.querySelector('button');
     if (btn) {
       btn.removeEventListener('click', this.clickHandler);
       btn.remove();
     }
 
     // Get the message element
-    let target = this.querySelector('.message');
+    let target = this.root.querySelector('.message');
     if (target) {
       // Inject the message into the UI
       let name = this.getAttribute('name');
