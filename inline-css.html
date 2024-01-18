@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Unity Design System Web Components</title>
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body>
+    <h1>Slots</h1>
+    <greeting-message></greeting-message>
+    <greeting-message>What's up?!</greeting-message>
+    <greeting-message><span slot="emoji">:wave:</span> Heyo!</greeting-message>
+    <script>
+      // Extend the HTMLElement class to create the web component
+        class GreetingMessage extends HTMLElement {
+          /**
+           * The class constructor object
+           */
+          constructor() {
+            // Always call super first in constructor
+            super();
+
+            // Create the shadow root
+            this.root = this.attachShadow({ mode: 'closed' });
+
+            console.log('Constructed', this);
+
+            this.root.innerHTML =
+              `
+              <style>
+                button {
+                  background-color: #0088cc;
+                  border: 1px solid #0088cc;
+                  border-radius: 0.25em;
+                  color: #ffffff;
+                  font-size: 1.5em;
+                  padding: 0.5em 1em;
+                }
+              </style>
+              <p>
+                <button><slot name="emoji"></slot><slot>Hi there!</slot></button>
+              </p>
+              <div class="message" aria-live="polite"></div>`;
+          }
+
+          /**
+           * Handle click events
+           * @param {Event} event The event object
+           */
+          clickHandler(event) {
+            // Get the host component
+            let host = event.target.getRootNode().host;
+
+            // Get the message element
+            let target = host.root.querySelector('.message');
+            if (!target) return;
+
+            let name = host.getAttribute('name');
+
+            // Inject the message into the UI
+            target.textContent = `Hi ${name ? name : 'there, friend'}! Hope you're having a great day.`;
+
+            // Clear the message after 5 seconds
+            setTimeout(() => {
+              target.textContent = '';
+            }, 5000)
+          }
+          /**
+           * Runs each time the element is appended or moved in the DOM
+           */
+          connectedCallback() {
+            console.log('Connected!', this);
+
+            // Attach a click event handler to the button
+            let btn = this.root.querySelector('button');
+            if (!btn) return;
+            btn.addEventListener('click', this.clickHandler);
+          }
+
+          /**
+           * Runs when the element is removed from the DOM
+           */
+          disconnectedCallback() {
+            console.log('Disconnected', this);
+
+            // Remove the click event listener from the button
+            let btn = this.root.querySelector('button');
+            if (!btn) return;
+            btn.removeEventListener('click', this.clickHandler);
+          }
+
+          /**
+           * Create a list of attributes to observe
+           */
+          static get observedAttributes() {
+            return ['logout'];
+          }
+
+          /**
+           * Runs when the value of an attribute is changed on the component
+           * @param {String} name The attribute name
+           * @param {String} oldValue The old attribute value
+           * @param {String} newValue The old attribute value
+           */
+          attributeChangedCallback(name, oldValue, newValue) {
+            console.log('changed', name, oldValue, newValue, this);
+
+            // If there are multiple attributes being observed,
+            // some sort of if/else logic will be necessary...
+            if (name === 'logout') {
+              // do stuffs
+            }
+
+            // Remove the button
+            let btn = this.root.querySelector('button');
+            if (btn) {
+              btn.removeEventListener('click', this.clickHandler);
+              btn.remove();
+            }
+
+            // Get the message element
+            let target = this.root.querySelector('.message');
+            if (target) {
+              // Inject the message into the UI
+              let name = this.getAttribute('name');
+              target.textContent = `Bye, ${name ? name : 'friend'}! See you next time.`;
+            }
+          }
+        }
+
+        if ('customElements' in window) {
+          customElements.define('greeting-message', GreetingMessage)
+        }
+
+        let greeting = document.querySelector('greeting-message');
+    </script>
+  </body>
+</html>
