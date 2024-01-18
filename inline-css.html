@@ -3,12 +3,29 @@
   <head>
     <title>Unity Design System Web Components</title>
     <link rel="stylesheet" href="css/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+      body {
+        margin: 0 auto;
+        max-width: 40em;
+        width: 88%;
+      }
+
+      greeting-message {
+        --bg-color: #f7272f;
+        --radius: 0;
+      }
+
+      greeting-message[name="Ursula"] {
+        --bg-color: rebeccapurple;
+        --radius: 1em;
+      }
+    </style>
   </head>
   <body>
     <h1>Slots</h1>
     <greeting-message></greeting-message>
-    <greeting-message>What's up?!</greeting-message>
-    <greeting-message><span slot="emoji">:wave:</span> Heyo!</greeting-message>
+    <greeting-message name="Ursula">What's up?!</greeting-message>
     <script>
       // Extend the HTMLElement class to create the web component
         class GreetingMessage extends HTMLElement {
